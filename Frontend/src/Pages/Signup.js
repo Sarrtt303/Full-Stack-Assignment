@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import bg1 from "../assets/bg1.jpg";
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000' // Adjust the URL as needed
-});
+
+
 
 
 const SignUp = () => {
@@ -14,31 +13,28 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  
-
   // Function to handle form submission
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    try{
-      const response = await axiosInstance.post('/api/users',{
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/users', {
         name,
         username,
         email,
         password
       });
-      console.log('User created', response.data)
+      console.log('User created', response.data);
       
+      // Clear form fields after successful submission
       setName('');
       setUsername('');
       setEmail('');
       setPassword('');
-    } catch(error){
-      console.error('Error creating user:', error)
+    } catch (error) {
+      console.error('Error creating user:', error);
     }
   };
-
-  
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -50,9 +46,7 @@ const SignUp = () => {
       <div className="w-2/3 p-8 flex justify-center">
         <form onSubmit={handleSubmit} className='w-full max-w-md'>
           {/* Name input */}
-          
-        <label className="top-0 left-0 right-0 text-2xl font-bold text-center">Create Account</label>
-        
+          <label className="top-0 left-0 right-0 text-2xl font-bold text-center">Create Account</label>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
             <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 p-2 block w-full md:w-1/2 rounded-md border-gray-300" />
@@ -75,8 +69,7 @@ const SignUp = () => {
           {/* Submit button */}
           <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Create Account</button>
           <div className="mb-4">
-            
-            <input type="checkbox" id="checkbox" required/>
+            <input type="checkbox" id="checkbox" required />
             <label className="block text-sm font-medium text-gray-700">Creating an account means you're okay with our Terms of Service, Privacy Policy, and out default Notification Settings </label>
           </div>
         </form>

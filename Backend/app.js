@@ -11,7 +11,8 @@ app.use(express.json());
 
 //Middleware for cors
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:3000', // Allow requests from this origin
+  credentials: true // Include cookies in CORS requests
 }));
 
 
@@ -27,7 +28,7 @@ mongoose.connect('mongodb+srv://sagardebnath1001:FT9OBTvqVo034IzJ@user-auth.vqtj
 
 
 // Endpoint to create a new user
-app.post('/users', async (req, res) => {
+app.post('/api/users', async (req, res) => {
   try {
     // Create a new user object using the data from the request body
     const newUser = new User(req.body);

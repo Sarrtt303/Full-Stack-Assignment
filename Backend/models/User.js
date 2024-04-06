@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
       unique: true
     },
     password: {
-      type: String,
+      type: String, // Assuming you're storing plain text passwords, consider hashing them for security
       required: true
     }
   });
