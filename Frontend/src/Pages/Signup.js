@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import bg1 from "../assets/bg1.jpg";
 
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:5000' // Adjust the URL as needed
+});
+
 
 const SignUp = () => {
   // State variables to store user input
@@ -9,21 +13,15 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [usernameTaken, setUserNameTaken] = useState(false);
+  
   
 
   // Function to handle form submission
   const handleSubmit = async(event) => {
     event.preventDefault();
-    const isUserNameTaken = await checkUserName(username);
-
-  if (isUserNameTaken) {
-    setUserNameTaken(true);
-    return; // Exit early if the username is taken
-  }
+    
     try{
-      const response = await axios.post('/api/users',{
-        
+      const response = await axiosInstance.post('/api/users',{
         name,
         username,
         email,
@@ -40,9 +38,7 @@ const SignUp = () => {
     }
   };
 
-  const checkUserName= async(username)=>{
-    return false;
-  };
+  
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -56,9 +52,7 @@ const SignUp = () => {
           {/* Name input */}
           
         <label className="top-0 left-0 right-0 text-2xl font-bold text-center">Create Account</label>
-        {usernameTaken && (
-          <p className="text-red-500 mb-4">Username is already taken. Please choose a different one.</p>
-        )}
+        
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
             <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="mt-1 p-2 block w-full md:w-1/2 rounded-md border-gray-300" />

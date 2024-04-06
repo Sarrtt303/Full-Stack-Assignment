@@ -1,10 +1,15 @@
-import Signup from "./Components/Signup";
+import Signup from "./Pages/Signup";
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
 function App() {
   return (
-    <div>
-   <Signup />
-    </div>
+    
+   <BrowserRouter>
+    <Routes>
+      <Route path='/signup' element={<Signup/>}></Route>
+    </Routes>
+   </BrowserRouter>
+    
   );
 }
 
