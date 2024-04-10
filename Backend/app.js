@@ -5,8 +5,10 @@ const express = require('express');
 const User = require('./models/User');
 const cors = require('cors');
 const app = express();
-//middleware for connection
+const bcrypt = require('bcrypt');
+const hashPassword= require('./helpers/auth')
 
+//middleware for connection
 app.use(express.json());
 
 //Middleware for cors
@@ -14,6 +16,8 @@ app.use(cors({
   origin: 'http://localhost:3000', // Allow requests from this origin
   credentials: true // Include cookies in CORS requests
 }));
+
+
 
 
 //connection to mongoose
@@ -27,6 +31,7 @@ mongoose.connect('mongodb+srv://sagardebnath1001:FT9OBTvqVo034IzJ@user-auth.vqtj
 
 
 
+const hashedPassword= await hashPassword(password)
 // Endpoint to create a new user
 app.post('/api/users', async (req, res) => {
   try {
@@ -37,6 +42,39 @@ app.post('/api/users', async (req, res) => {
     res.status(201).json(newUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+});
+
+
+//Endpoint to authenticate user and handling login requests
+
+app.post('/api/login', async (req, res) => {
+  // Extract username and password from the request body
+  const { username, password } = req.body;
+
+  try {
+    // Find the user by username in the database
+    const user = await User.findOne({ username });
+
+    // If the user is not found, return an error response
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Compare the provided password with the hashed password stored in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    // If the passwords don't match, return an error response
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    // If the passwords match, return a success response
+    res.status(200).json({ message: 'Login successful', user });
+  } catch (error) {
+    // If an error occurs, return a server error response
+    console.error('Error logging in:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
