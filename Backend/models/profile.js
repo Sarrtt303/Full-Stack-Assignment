@@ -1,13 +1,10 @@
 // profile.model.js
 const mongoose = require('mongoose');
+const { buffer } = require('stream/consumers');
 const Schema = mongoose.Schema;
 
 const profileSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+
     profileImage: {
         type: String,
         required: true

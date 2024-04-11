@@ -50,6 +50,9 @@ const SignUp = () => {
     <div className="flex items-center justify-center h-screen bg-white">
       {/* Image section */}
       <div className="w-1/3 h-full  flex items-center justify-center">
+      <span className="absolute top-4 left-4 text-xl text-white">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </span>
         <img src={bg1} alt="" className="w-auto h-full object-cover" />
       </div>
       {/* Form section */}

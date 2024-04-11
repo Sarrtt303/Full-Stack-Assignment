@@ -6,10 +6,15 @@ const User = require('./models/User');
 const cors = require('cors');
 const app = express();
 const bcrypt = require('bcrypt');
-const hashPassword= require('./helpers/auth')
+const bodyParser = require('body-parser');
+const profileRouter = require('./routes/ProfileRoutes');
+
+
 
 //middleware for connection
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // Parse JSON request bodies
 
 //Middleware for cors
 app.use(cors({
@@ -31,7 +36,6 @@ mongoose.connect('mongodb+srv://sagardebnath1001:FT9OBTvqVo034IzJ@user-auth.vqtj
 
 
 
-const hashedPassword= await hashPassword(password)
 // Endpoint to create a new user
 app.post('/api/users', async (req, res) => {
   try {
@@ -77,6 +81,9 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+// Route for handling profiles
+app.use('/api', profileRouter); 
 
 // Start the server
 const PORT = process.env.PORT || 5000;

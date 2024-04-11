@@ -16,9 +16,7 @@ const hashPassword=(password)=>{
     })
 }
 
-const comparePassword =(password, hashed)=>{     //Compares the hashed password in the database with the password entered by the user
-    return bcrypt.compare(password, hashed)
-}
+
 
 module.exports={
     hashPassword,

@@ -1,61 +1,69 @@
 import React, { useState } from 'react';
-import ImageUpload from '../components/ImageUpload';
-import LocationInput from '../components/LocationInput';
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
+const ProfileForm = () => {
+  const [location, setLocation] = useState('');
+  const [image, setImage] = useState(null);
+  const navigate= useNavigate()
 
-const ProfileForm = ({ username }) => {
-    const [profileImage, setProfileImage] = useState(null);
-    const [location, setLocation] = useState('');
-   
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
+  };
 
-    const handleImageUpload = (image) => {
-        setProfileImage(image);
-    };
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
-    const handleLocationChange = (e) => {
-        setLocation(e.target.value);
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        // Send profile data (username, profileImage, location) to the API
-        const formData = new FormData();
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('location', location);
 
-        formData.append('username', username);
-        formData.append('profileImage', profileImage);
-        formData.append('location', location);
-
-        try{
-            const response= await fetch('http://localhost:5000/profiles',{
-                  method:'POST',
-                  body: formData
-            });
-
-            if(!response.ok){
-                throw new Error('Failed to create profile')
-            }
-                
-        }catch(error){
-            console.log("Error creating profile:",error);
+      // Send POST request to backend endpoint
+      await axios.post('http://localhost:5000/api/profiles', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-        
-    };   
+      });
 
-    return (
-        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center h-screen">
-        <div className="max-w-xs mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <h2 className="text-xl mb-4">Create Profile</h2>
-            <p className="mb-4">Username: {username}</p>
-            <div className="mb-4">
-            <ImageUpload onImageUpload={handleImageUpload} />
-            </div>
-            <div className="mb-4">
-            <LocationInput value={location} onChange={handleLocationChange} />
-            </div>
-            <button type="submit" className='bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 w-full' >Create Profile</button>
-            </div>
-        </form>
-    );
+      alert('Profile created successfully!');
+      // Reset form fields
+      navigate('/finish');
+    } catch (error) {
+      console.error('Error creating profile:', error);
+      alert('Failed to create profile. Please try again.');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label htmlFor="location">Location:</label>
+        <input
+          type="text"
+          id="location"
+          value={location}
+          onChange={handleLocationChange}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="image">Image:</label>
+        <input
+          type="file"
+          id="image"
+          accept="image/*"
+          onChange={handleImageChange}
+          required
+        />
+      </div>
+      <button type="submit">Create Profile</button>
+    </form>
+  );
 };
 
 export default ProfileForm;
