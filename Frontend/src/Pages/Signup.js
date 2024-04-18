@@ -13,10 +13,11 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
-  const navigate= useNavigate();
-  const handleClick = () => {
   
-    navigate("/login");
+  const navigate= useNavigate();
+  //Redirects to login if there already is an account
+  const handleClick = () => {
+      navigate("/login");
   }
   
   // Function to handle form submission
@@ -24,9 +25,6 @@ const SignUp = () => {
     event.preventDefault();
 
     try {
-       
-      
-
       //POST Request
       const response = await axios.post('http://localhost:5000/api/users', {
         name,
@@ -35,6 +33,11 @@ const SignUp = () => {
         password
       });
       console.log('User created', response.data);
+      
+
+      navigate('/profile?email=' + encodeURIComponent(email));
+
+      
       
       // Clear form fields after successful submission
       setName('');

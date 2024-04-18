@@ -1,14 +1,19 @@
+require('dotenv').config();
 
-//calls the mongoose module
 const mongoose = require('mongoose');
 const express = require('express');
 const User = require('./models/User');
 const cors = require('cors');
+const url = require('url');
+
 const app = express();
+
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const profileRouter = require('./routes/ProfileRoutes');
+const cloudinaryProfileRoutes = require('./routes/CloudinaryProfileRoutes');
 
+
+const fetch = require('node-fetch');
 
 
 //middleware for connection
@@ -82,9 +87,80 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Route for handling profiles
-app.use('/api', profileRouter); 
+// Use the routes from CloudinaryProfileRoutes.js
+app.use('/api', cloudinaryProfileRoutes);
 
+
+// Function to extract email from URL
+function getEmailFromUrl(req) {
+  const queryObject = url.parse(req.url,true).query;
+  return queryObject.email || null;
+}
+// Route to handle the verification request from the finish page
+app.get('/verify', async (req, res) => {
+  const email = getEmailFromUrl(req); // Extract email from the URL
+
+  if (!email) {
+    return res.status(400).json({ success: false, error: 'Email not provided' });
+  }
+
+  try {
+    const result = await sendVerificationEmail(email);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+async function sendVerificationEmail(email) {
+  const apiKey = process.env.RESEND_API_KEY;
+   
+  const url = 'https://api.resend.com/emails';
+    const body = {
+      
+      from: 'Acme <onboarding@resend.dev>',
+      to: email,
+      subject: 'Email Verification',
+      html: `<p>Click <a href="http://localhost:3000/verify">here</a> to verify your email address.</p>`,
+      
+    };
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(body),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        console.error('Error sending email:', data);
+        return { success: false, error: data };
+      }
+  
+      console.log('Email sent successfully:', data);
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return { success: false, error };
+    }
+  }
+
+app.post('/api/send-verification-email', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const result = await sendVerificationEmail(email);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
