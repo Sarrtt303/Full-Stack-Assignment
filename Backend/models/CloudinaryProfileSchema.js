@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const CloudinaryprofileSchema = new mongoose.Schema({
+const profileSchema = new mongoose.Schema({
   location: { type: String, required: true },
+  email: {type: String, required: true},
   imageUrl: { type: String, required: true }
-}, { collection: 'CloudinaryProfiles' }); // Specify the collection name here
+}); 
+const Profile = mongoose.model('Profile', profileSchema);
 
-const CloudinaryProfile = mongoose.model('CloudinaryProfiles', CloudinaryprofileSchema);
-
-module.exports = CloudinaryProfile;
+module.exports = Profile;

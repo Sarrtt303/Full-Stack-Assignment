@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const CloudinaryProfileForm = () => {
   const [location, setLocation] = useState('');
-  const [imageFile, setImageFile] = useState(null); 
+  const [imageUrl, setImageUrl] = useState(''); 
   const navigate = useNavigate();
   const locationData = useLocation();
   const email = new URLSearchParams(locationData.search).get('email');
@@ -12,6 +12,7 @@ const CloudinaryProfileForm = () => {
   const handleLocationChange = (e) => {
     setLocation(e.target.value);
   };
+  
 
   const handleImageUpload = () => {
     const widget = window.cloudinary.createUploadWidget(
@@ -26,8 +27,9 @@ const CloudinaryProfileForm = () => {
       },
       (error, result) => {
         if (!error && result && result.event === 'success') {
-          const uploadedFile = result.info.secure_url;
-          setImageFile(uploadedFile);
+          // Extract the secure URL of the uploaded image from the response object
+          const uploadedImageUrl = result.info.secure_url;
+          setImageUrl(uploadedImageUrl);
         }
       }
     );
@@ -39,10 +41,14 @@ const CloudinaryProfileForm = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('imageUrl', imageFile);
-      formData.append('location', location);
       
-      await axios.post('http://localhost:5000/api/CloudinaryProfiles', formData, {
+      
+      formData.append('location', location);
+      formData.append('email', email);
+      formData.append('imageUrl', imageUrl);
+      
+      
+      await axios.post('http://localhost:5000/api/profiles', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -76,8 +82,8 @@ const CloudinaryProfileForm = () => {
             </button>
           </div>
           {/* Image Preview */}
-          {imageFile && (
-            <img src={imageFile} alt="Preview" className="rounded-full w-40 h-40" />
+          {imageUrl && (
+            <img src={imageUrl} alt="Preview" className="rounded-full w-40 h-40" />
           )}
         </div>
         <div className="mb-4 mt-12">

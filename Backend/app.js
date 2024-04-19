@@ -10,7 +10,7 @@ const app = express();
 
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const cloudinaryProfileRoutes = require('./routes/CloudinaryProfileRoutes');
+const ProfileRoutes = require('./routes/CloudinaryProfileRoutes');
 
 
 const fetch = require('node-fetch');
@@ -88,7 +88,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Use the routes from CloudinaryProfileRoutes.js
-app.use('/api', cloudinaryProfileRoutes);
+app.use('/api', ProfileRoutes);
 
 
 // Function to extract email from URL
