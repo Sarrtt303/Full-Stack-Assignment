@@ -10,7 +10,7 @@ const app = express();
 
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const ProfileRoutes = require('./routes/CloudinaryProfileRoutes');
+const ProfileRoutes = require('./routes/ProfileCreationRoutes');
 
 
 const fetch = require('node-fetch');

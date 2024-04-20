@@ -12,47 +12,46 @@ const CloudinaryProfileForm = () => {
   const handleLocationChange = (e) => {
     setLocation(e.target.value);
   };
-  
 
-  const handleImageUpload = () => {
-    const widget = window.cloudinary.createUploadWidget(
-      {
-        cloudName: 'dey8jatax',
-        uploadPreset: 'profileimage_demo',
-        sources: ['local', 'url', 'camera'],
-        cropping: true,
-        croppingAspectRatio: 1,
-        croppingShowDimensions: true,
-        maxFileSize: 10000000, // 10MB
-      },
-      (error, result) => {
-        if (!error && result && result.event === 'success') {
-          // Extract the secure URL of the uploaded image from the response object
-          const uploadedImageUrl = result.info.secure_url;
-          setImageUrl(uploadedImageUrl);
+  const handleImageUpload = async () => {
+    try {
+      const widget = window.cloudinary.createUploadWidget(
+        {
+          cloudName: 'dey8jatax',
+          uploadPreset: 'profileimage_demo',
+          sources: ['local', 'url', 'camera'],
+          cropping: true,
+          croppingAspectRatio: 1,
+          croppingShowDimensions: true,
+          maxFileSize: 10000000, // 10MB
+        },
+        async (error, result) => {
+          if (!error && result && result.event === 'success') {
+            //Extract ssecure url and sset imageUrl state to current image uploaded
+            const uploadedImageUrl = result.info.secure_url;
+            setImageUrl(uploadedImageUrl);
+          }
         }
-      }
-    );
-
-    widget.open();
+      );
+      widget.open();
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
       
-      
-      formData.append('location', location);
-      formData.append('email', email);
-      formData.append('imageUrl', imageUrl);
-      
-      
-      await axios.post('http://localhost:5000/api/profiles', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+
+      const data = {
+        location: location,
+        email: email
+      };
+     
+
+      await axios.post('http://localhost:5000/api/profiles', data);
 
       alert('Profile created successfully!');
       navigate('/finish?email=' + encodeURIComponent(email));

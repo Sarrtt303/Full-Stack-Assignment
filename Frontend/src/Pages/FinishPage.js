@@ -8,7 +8,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Card = ({ imageSrc,description, isChecked, onChange, content }) => {
   return (
     <div
-      className={`flex flex-col items-center mr-4 md:scale-140 rounded-lg border-4 transition-colors duration-300 ${
+      className={`flex flex-col items-center mr-4 md:scale-140 h-full rounded-lg border-4 transition-colors duration-300 ${
         isChecked ? 'border-sky-400' : 'border-gray-300'
       }`}
     >
@@ -58,10 +58,10 @@ const FinishPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen">
-      <h1 className="mb-8 text-4xl md:text-6xl">What brings you to us?</h1>
-      <div className="flex justify-between w-1/3 ">
-       <div className="group relative">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full px-4">
+    <h1 className="mb-8 text-3xl md:text-4xl lg:text-6xl text-center">What brings you to us?</h1>
+    <div className="flex flex-col md:flex-row justify-between w-full md:w-2/3 lg:w-1/3 item-stretch">
+      <div className="group relative mb-4 md:mb-0 flex-grow">
         <Card
           imageSrc={hire}
           description="Hire developers"
@@ -70,9 +70,8 @@ const FinishPage = () => {
           className="transition-colors duration-300 group-hover:border-blue-500"
           content="I am an employer who wants to hire people for my company"
         />
-        
-       </div>
-       <div className="group">
+      </div>
+      <div className="group relative mb-4 md:mb-0">
         <Card
           imageSrc={share}
           description="Share your Stories"
@@ -80,10 +79,9 @@ const FinishPage = () => {
           onChange={() => handleCheckboxChange(0)}
           className="transition-colors duration-300 group-hover:border-blue-500"
           content="I want to share my knowledge with the community"
-          
         />
-        </div>
-        <div className="group">
+      </div>
+      <div className="group relative">
         <Card
           imageSrc={inspo}
           description="Get insipiration from devs"
@@ -92,12 +90,16 @@ const FinishPage = () => {
           className="transition-colors duration-300 group-hover:border-blue-500"
           content="I want to see how professionals work and lrean best practices"
         />
-       </div>
       </div>
-      <button onClick={handleFinishButtonClick} disabled={!isChecked} className="mt-8 px-8 py-2 bg-sky-400 text-white rounded-md md:text-lg md:px-12 md:py-4" >
-        Finish
-      </button>
     </div>
+    <button
+      onClick={handleFinishButtonClick}
+      disabled={!isChecked.some(Boolean)}
+      className="mt-8 px-6 py-2 bg-sky-400 text-white rounded-md md:text-lg md:px-8 md:py-3 lg:px-12 lg:py-4"
+    >
+      Finish
+    </button>
+  </div>
   );
 };
 
