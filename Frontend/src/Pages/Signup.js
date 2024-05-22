@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import bg1 from "../assets/bg1.jpg";
+import bg1 from "../assets/bg-2.jpg";
 import {useNavigate} from "react-router-dom"
 
 
@@ -93,7 +93,7 @@ const SignUp = () => {
     </form>
   </div>
   <h2 className="absolute top-8 right-8 text-lg text-black-500 hover:text-blue-700 cursor-pointer">
-    <div onClick={handleClick}>Already have an account? Sign in</div>
+    <div onClick={handleClick}>Already have an account? Log in</div>
   </h2>
 </div>
   );
